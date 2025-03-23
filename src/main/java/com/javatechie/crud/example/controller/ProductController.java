@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import org.springframework.http.ResponseEntity;
 
 @RestController
 public class ProductController {
@@ -48,11 +49,16 @@ public class ProductController {
         return service.deleteProduct(id);
     }
     @GetMapping("/products/search")
-    public List<Product> searchProducts(@RequestParam String keyword) {
-        return service.searchProducts(keyword);
-    }
-    @GetMapping("/health")
-    public String healthCheck() {
-        return "OK";
+    public ResponseEntity<?> searchProducts(
+        @RequestParam(required = false) String keyword,
+        @RequestParam(required = false) Double minPrice,
+        @RequestParam(required = false) Double maxPrice
+    ) {
+        if (keyword == null || keyword.trim().isEmpty()) {
+            return ResponseEntity.badRequest().body("Keyword is required for search");
+        }
+
+        List<Product> products = service.searchProducts(keyword, minPrice, maxPrice);
+        return ResponseEntity.ok(products);
     }
 }
