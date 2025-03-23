@@ -47,4 +47,8 @@ public class ProductController {
     public String deleteProduct(@PathVariable int id) {
         return service.deleteProduct(id);
     }
+    @GetMapping("/health")
+    public String healthCheck() {
+        return "OK";
+    }
 }
